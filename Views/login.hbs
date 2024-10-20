@@ -1,19 +1,30 @@
-<h1 style="margin: 20px 0;">login</h1>
+<h1 style="margin: 20px 0; text-align: center;">Login</h1> <!-- Centrar el título -->
 
-<div class="row">
-    <div class="col-md-6">
+<div class="row justify-content-center"> <!-- Centrar la fila -->
+    <div class="col-md-6 text-center"> <!-- Centrar el contenido en la columna -->
         <form action="/auth/login" method="post">
-           <img src="/Logo/Logotipo.jpeg" alt="Logo de la aplicación" style="width: 300px; height: 300px;">
-            <input type="email" name="email" placeholder="Ingrese un correo">
-            <input type="password" name="password" placeholder="Ingrese su contraseña">
+            <img src="/Logo/Logotipo.jpeg" alt="Logo de la aplicación" class="logo" style="width: 300px; height: 300px; border-radius: 50%;"> <!-- Logo redondeado -->
+            <input type="email" name="email" placeholder="Ingrese un correo" class="form-control my-2"> <!-- Agregar clases de Bootstrap para el estilo -->
+            <input type="password" name="password" placeholder="Ingrese su contraseña" class="form-control my-2"> <!-- Agregar clases de Bootstrap para el estilo -->
             <button class="btn btn-success" type="submit">Iniciar sesión</button>
+            <a href="/auth/register" class="btn btn-black" >Crear cuenta</a> <!-- Enlace como botón -->
         </form>
     </div>
 </div>
+
 <style>
   .logo {
-    width: 600px; /* o 700px */
-    height: 600px; /* o 700px */
+    border-radius: 50%; /* Esto hace que el logo sea redondeado */
   }
+  .btn-black {
+    background-color: black;  /* Color de fondo negro */
+    color: white;             /* Color del texto en blanco */
+    border: none;            /* Sin borde */
+}
+
+.btn-black:hover {
+    background-color: #333; /* Un gris oscuro para el hover */
+}
+
 </style>
 

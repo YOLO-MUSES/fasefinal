@@ -105,15 +105,15 @@ const addComment = async (req, res) => {
 // Controllers/ventaController.js
 const addVenta = async (req, res) => {
     try {
+        let objectDate= new Date();
         const { products, total } = req.body;
         const userId = req.user.id; // Asume que el usuario está autenticado
-
         // Crear una nueva venta
         const newVenta = new Venta({
             userId,
             products,
             total,
-            date: Date.now() // Establece la fecha actual
+            date: objectDate.toLocaleString() // Establece la fecha actual
         });
         await newVenta.save();
 

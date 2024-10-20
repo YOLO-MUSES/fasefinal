@@ -6,17 +6,27 @@ const formidable = require('formidable');
 const users = require('../models/users');
 const Comment = require('../models/commentSchema')
 const Venta = require('../models/VentaModel')
+const cloudinary = require('cloudinary').v2;
+
+
+cloudinary.config({
+    cloud_name: process.env.cloud_name, // Reemplaza con tu nombre de nube
+    api_key: process.env.api_key,       // Reemplaza con tu API key
+    api_secret: process.env.api_secret  // Reemplaza con tu API secret
+});
+
 const leerPublicaciones = async (req, res) => {
     try {
         const urls = await Publics.find().lean().populate('user'); // Cargar todas las publicaciones
         const user = await users.findById(req.user.id).lean(); // Cargar el usuario actual
 
+        
         // Obtener mensajes de flash
         const successMessage = req.flash('success');
         const errorMessage = req.flash('error');
 
         return res.render('home', {
-            urls: urls,
+            publicaciones: urls, // Renombrado para ser más claro
             user: user,
             successMessage,
             errorMessage
@@ -26,6 +36,7 @@ const leerPublicaciones = async (req, res) => {
         return res.redirect('/'); // Redirigir en caso de error
     }
 };
+
 
 const leermispublicaciones = async (req, res) => {
     try {
@@ -91,7 +102,7 @@ const cargarPerfil = async (req, res) => {
 
         // Buscar al usuario en la base de datos
         const user = await users.findById(userId).lean(); // Aplicar lean para obtener un objeto plano
-        const urls = await Publics.find({ user: userId }).lean();
+        const urls = await Publics.find({user:userId}).lean().populate('user');
 
         // Buscar los comentarios y llenar el campo de usuario
         const comments = await Comment.find({ profileId: userId })
@@ -129,7 +140,6 @@ const cargarPerfil = async (req, res) => {
         return res.redirect('/');
     }
 };
-
 const PintoresPost = async (req, res) => {
     const form = new formidable.IncomingForm();
 
@@ -166,22 +176,19 @@ const PintoresPost = async (req, res) => {
                     }
 
                     try {
-                        const dirFile = path.join(__dirname, `/../public/Publicaciones/artesymas/${file.originalFilename}`);
-                        const outputDir = path.dirname(dirFile);
-                        await fs.promises.mkdir(outputDir, { recursive: true });
+                        // Subir imagen a Cloudinary
+                        const result = await cloudinary.uploader.upload(file.filepath, {
+                            folder: 'Publicaciones/artesymas',
+                            transformation: [{ width: 600, height: 600, crop: 'fit', quality: 80 }]
+                        });
 
-                        await sharp(file.filepath)
-                            .resize({ width: 600, height: 600, fit: 'inside' }) // Ajusta a 600x600 manteniendo la relación de aspecto
-                            .jpeg({ quality: 80 })
-                            .toFile(dirFile);
-
-
-                        processedImages.push(file.originalFilename);
+                        processedImages.push(result.secure_url);
                     } catch (error) {
-                        throw new Error(`Error al procesar la imagen ${file.originalFilename}: ${error.message}`);
+                        throw new Error(`Error al subir la imagen ${file.originalFilename} a Cloudinary: ${error.message}`);
                     }
                 }
             }
+
             const user = await users.findById(req.user.id);
             const publics = new Publics({
                 name: Names || "pablitos",
@@ -208,7 +215,8 @@ const Perfil = async (req, res) => {
             }
 
             const fileArray = Array.isArray(files.myFile) ? files.myFile : [files.myFile];
-            const file = fileArray[0];  // Asumimos que solo se sube un archivo para el perfil
+            const file = fileArray[0]; // Asumimos que solo se sube un archivo para el perfil
+
             if (!file || !file.originalFilename) {
                 throw new Error('Por favor selecciona una imagen válida.');
             }
@@ -218,21 +226,17 @@ const Perfil = async (req, res) => {
                 throw new Error('Tipo de archivo no permitido. Solo JPG, JPEG y PNG.');
             }
 
-            const extension = file.mimetype.split("/")[1];
-            const dirFile = path.join(__dirname, `/../public/Perfiles/fotodinamica/${req.user.id}.${extension}`);
-            const outputDir = path.dirname(dirFile);
+            // Subir la imagen a Cloudinary
+            const result = await cloudinary.uploader.upload(file.filepath, {
+                folder: 'Perfiles/fotodinamica', // Carpeta donde se almacenará la imagen en Cloudinary
+                transformation: [{ width: 200, height: 200, crop: 'fit', quality: 80 }] // Ajustes de transformación
+            });
 
-            await fs.promises.mkdir(outputDir, { recursive: true });
-
-            await sharp(file.filepath)
-                .resize(200, 200)
-                .jpeg({ quality: 80 })
-                .toFile(dirFile);
-
-            // Actualizar la foto en el perfil del usuario
+            // Actualizar la URL de la foto en el perfil del usuario
             const user = await users.findById(req.user.id);
-            user.foto = `${req.user.id}.${extension}`;
+            user.foto = result.secure_url; // Guardar la URL segura de Cloudinary
             await user.save();
+
             req.flash('success', "Foto de perfil actualizada correctamente");
             return res.redirect('/profile');
         } catch (error) {
@@ -241,6 +245,7 @@ const Perfil = async (req, res) => {
         }
     });
 };
+
 
 module.exports = {
     leerPublicaciones,

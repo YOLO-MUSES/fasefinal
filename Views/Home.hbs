@@ -14,7 +14,7 @@
             document.getElementById('errorMessage').textContent = '{{errorMessage}}';
         </script>
     {{/if}}
-{{#each urls}}
-{{> Card items=this}}
-{{/each}}
 
+{{#each publicaciones}}
+   {{> Card items=this}}
+{{/each}}

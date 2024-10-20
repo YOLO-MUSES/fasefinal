@@ -1,5 +1,0 @@
-/* Escala las imágenes del Lightbox al 200% */
-.lb-image {
-    transform: scale(2);
-    transform-origin: center;
-}
