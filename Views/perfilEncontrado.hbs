@@ -1,0 +1,89 @@
+
+<style>
+        .tab {
+    cursor: pointer;
+    padding: 12px 20px; /* Espaciado ajustado para una mejor apariencia */
+    background-color: #f1f1f1;
+    display: inline-block;
+    border: 1px solid #ccc; /* Borde sutil */
+    border-radius: 5px; /* Bordes redondeados */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Transición suave */
+    margin-right: 5px; /* Espaciado entre pestañas */
+}
+
+.tab:hover {
+    background-color: #e1e1e1; /* Color de fondo al pasar el mouse */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra al pasar el mouse */
+}
+
+.tab-content {
+    display: none;
+    padding: 15px; /* Espaciado interno para el contenido */
+    border: 1px solid #ccc; /* Borde para el contenido */
+    border-radius: 5px; /* Bordes redondeados */
+    background-color: #fff; /* Fondo blanco para el contenido */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil para el contenido */
+    margin-top: 10px; /* Espaciado superior para separar las pestañas del contenido */
+}
+
+.active {
+    display: block;
+}
+
+.active-tab {
+    background-color: #ddd; /* Color de fondo para la pestaña activa */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para la pestaña activa */
+    color: #333; /* Color del texto en la pestaña activa */
+}
+
+    </style>
+<div class="my-5 text-center">
+  {{#if imagen}}
+    <!-- Muestra la imagen del usuario si existe -->
+    <img src="/Perfiles/fotodinamica/{{imagen}}" alt="Imagen de perfil" style="">
+  {{else}}
+    <!-- Muestra la imagen por defecto si no hay una imagen subida -->
+    <img src="/Perfiles/fotosdinamicas/Profile-PNG-Images.png" alt="Imagen por defecto">
+  {{/if}}
+</div>
+{{#if successMessage}}
+        <script>
+            document.getElementById('successPopup').style.display = 'block';
+            document.getElementById('popupMessage').textContent = '{{successMessage}}';
+        </script>
+    {{/if}}
+
+    {{#if errorMessage}}
+        <script>
+            document.getElementById('errorPopup').style.display = 'block';
+            document.getElementById('errorMessage').textContent = '{{errorMessage}}';
+        </script>
+    {{/if}}
+<h1>{{usuario.userName}} </h1>
+<a href="{{usuario._id}}" hidden="true" >{{usuario._id}}</a>
+<div class="tabs">
+        <div class="tab" id="tab1" onclick="showTab('content1')">Publicaciones</div>
+        <div class="tab" id="tab2" onclick="showTab('content2')">Comentarios</div>
+    </div>
+
+    <div id="content1" class="tab-content active">
+        {{> tab1Content }} <!-- Carga la información de la pestaña 1 -->
+    </div>
+
+    <div id="content2" class="tab-content">
+        {{> tab2Content }} <!-- Carga la información de la pestaña 2 -->
+    </div>
+
+    <script>
+        function showTab(contentId) {
+            document.querySelectorAll('.tab-content').forEach((tab) => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`#${contentId}`).classList.add('active');
+
+            document.querySelectorAll('.tab').forEach((tab) => {
+                tab.classList.remove('active-tab');
+            });
+            document.querySelector(`#tab${contentId.charAt(contentId.length - 1)}`).classList.add('active-tab');
+        }
+    </script>
