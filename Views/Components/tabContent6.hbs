@@ -1,0 +1,163 @@
+<article class="card" style="margin: 20px 0; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px;">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <h2>{{this.name}}</h2>
+    <div class="galeria" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; justify-items: center; align-items: center;">
+        {{#each this.Imagen}}
+            <!-- Usar la misma imagen tanto para la galería como para el Lightbox -->
+            <a href="{{this}}" data-lightbox="galeria" data-title="Imagen de la publicación">
+                <img src="{{this}}" alt="Imagen de la publicación" style="width: 400px; height: 400px; object-fit: cover; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+            </a>
+        {{/each}}
+        <a href="https://wa.me/{{this.user.telefono}}" target="_blank">Enviar mensaje a {{this.user.userName}}</a>
+    </div>
+</article>
+<style>
+    /* Estilo para la tarjeta y las imágenes */
+    .card {
+        margin: 20px 0;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+
+    .galeria {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .galeria img {
+        width: auto; /* Ajusta el ancho al 100% del contenedor */
+        height: auto; /* Mantiene la relación de aspecto */
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Escala las imágenes del Lightbox al 200% */
+    .lb-image {
+        transform-origin: center;
+    }
+    /* Ajustes para el botón de cerrar la imagen */
+. /* Ajustes para el texto */
+    .galeria p {
+        font-size: 1rem; /* Ajusta el tamaño de fuente */
+        text-align: center; /* Centra el texto */
+        margin: 10px 0; /* Espaciado alrededor del texto */
+    }
+
+    .galeria a {
+        font-size: 1rem; /* Ajusta el tamaño de fuente */
+        text-align: center; /* Centra el texto */
+        display: block; /* Para ocupar el espacio completo */
+        margin-top: 10px; /* Espaciado superior */
+    }
+
+
+
+    /* Ajustes para el botón de cerrar la imagen */
+    .lb-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+        border-radius: 50%;
+        color: white;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .lb-close:hover {
+        background-color: rgba(0, 0, 0, 0.8); /* Más oscuro al pasar el mouse */
+    }
+
+    /* Ajustes para los botones de navegación (anterior/siguiente) */
+    .lb-prev, .lb-next {
+        background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+        border-radius: 50%;
+        color: white;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .lb-prev:hover, .lb-next:hover {
+        background-color: rgba(0, 0, 0, 0.8); /* Más oscuro al pasar el mouse */
+    }
+
+    /* Ajusta la posición de los botones en relación al tamaño de la imagen */
+    .lb-prev {
+        position: absolute;
+        top: 50%;
+        left: 30px; /* Aleja el botón de la esquina izquierda */
+        transform: translateY(-50%);
+        z-index: 1000;
+    }
+
+    .lb-next {
+        position: absolute;
+        top: 50%;
+        right: 30px; /* Aleja el botón de la esquina derecha */
+        transform: translateY(-50%);
+        z-index: 1000;
+    }
+
+    /* Media queries para pantallas más pequeñas */
+    @media (max-width: 768px) {
+        .galeria {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Cambia el tamaño mínimo a 150px */
+        }
+
+        .galeria p, .galeria a {
+            font-size: 0.9rem; /* Tamaño de fuente más pequeño */
+        }
+    }
+
+    @media (max-width: 576px) {
+        .galeria {
+            grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+        }
+
+        .galeria img {
+            width: auto; /* Las imágenes ocupan el 100% del contenedor */
+            height: auto; /* Mantiene la relación de aspecto */
+        }
+        
+        .galeria p, .galeria a {
+            font-size: 0.8rem; /* Tamaño de fuente aún más pequeño */
+        }
+    }
+</style>
+
+<!-- jQuery (requerido para Lightbox) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Lightbox JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
+
+<!-- JavaScript personalizado para escalar las imágenes al 200% y ajustar su tamaño máximo -->
+<script>
+    lightbox.option({
+        'resizeDuration': 200,
+        'wrapAround': true,
+        'maxWidth': 1600,  // Ancho máximo de la imagen en Lightbox
+        'maxHeight': 1200  // Altura máxima de la imagen en Lightbox
+    });
+
+    // Escala del 200% al cargar la imagen en el Lightbox
+    $(document).on('lightbox:imageLoad', function() {
+        $('.lb-image').css('transform');
+        $('.lb-image').css('transform-origin', 'center');
+    });
+</script>
