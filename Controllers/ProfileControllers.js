@@ -166,7 +166,7 @@ const getReporteVentas = async (req, res) => {
             doc.text(`Venta ${index + 1}`, { underline: true });
             doc.text(`Usuario: ${venta.userId.userName}`);
             doc.text(`Productos: ${venta.products}`);
-            doc.text(`Total: $${venta.total}`);
+            doc.text(`Total: Q${venta.total}`);
             doc.text(`Fecha: ${venta.date}`);
             doc.moveDown();
         });
