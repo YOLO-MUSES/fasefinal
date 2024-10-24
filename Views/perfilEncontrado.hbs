@@ -62,12 +62,12 @@
 <h1>{{usuario.userName}} </h1>
 <a href="{{usuario._id}}" hidden="true" >{{usuario._id}}</a>
 <div class="tabs">
-        <div class="tab" id="tab1" onclick="showTab('content6')">Publicaciones</div>
+        <div class="tab" id="tab1" onclick="showTab('content1')">Publicaciones</div>
         <div class="tab" id="tab2" onclick="showTab('content2')">Comentarios</div>
     </div>
 
     <div id="content1" class="tab-content active">
-        {{> tab6Content }} <!-- Carga la información de la pestaña 1 -->
+        {{> tabContent6 }} <!-- Carga la información de la pestaña 1 -->
     </div>
 
     <div id="content2" class="tab-content">
