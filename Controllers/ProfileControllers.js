@@ -39,7 +39,7 @@ const cargarperfilajeno = async (req, res) => {
         }
 
         // Buscar las URLs asociadas
-        const urls = await Publics.find({ user: userId }).lean();
+        const urls = await Publics.find({ user: userId }).lean().populate('user);
         const comments = await Comment.find({ profileId: userId })
         .populate('userId', 'userName')
         .lean();
