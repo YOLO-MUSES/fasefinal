@@ -67,7 +67,7 @@ app.engine('hbs', hbs.engine);
 hbs.handlebars.registerHelper('allowProtoPropertiesByDefault', true);
 hbs.handlebars.registerHelper('allowProtoMethodsByDefault', true);
 app.set('view engine', 'hbs');
-app.set('views', './views');
+app.set('Views', './Views');
 
 // Middleware para leer datos del formulario
 app.use(express.urlencoded({ extended: false }));
